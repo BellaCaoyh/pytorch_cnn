@@ -1,12 +1,14 @@
 PARA = dict(
     train=dict(
-        epoch = 200,
-        batch_size = 128,
+        epochs = 100,
+        batch_size = 64,
         lr = 0.001,
         momentum=0.9,
         wd = 5e-4,
         num_workers = 2,
-        divice_ids = [1]
+        divice_ids = [1],
+        gpu_id = 0,
+        num_classes=10,
     ),
     test=dict(
         batch_size=100
@@ -16,8 +18,8 @@ PARA = dict(
 
         root = '/home/caoyh/DATASET/cifar10/',
 
-        original_trainset_path = '/home/caoyh/DATASET/cifar10/cifar-10-batches-py/',#train_batch_path
-        original_testset_path = '/home/caoyh/DATASET/cifar10/cifar-10-batches-py/',
+        original_trainset_path = '/home/caoyh/DATASET/cifar10/cifar-10-python/',#train_batch_path
+        original_testset_path = '/home/caoyh/DATASET/cifar10/cifar-10-python/',
 
         after_trainset_path = '/home/caoyh/DATASET/cifar10/trainset/',
         after_testset_path = '/home/caoyh/DATASET/cifar10/testset/',

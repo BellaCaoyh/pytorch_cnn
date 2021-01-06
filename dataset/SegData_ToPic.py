@@ -19,7 +19,8 @@ def SegDataset_ToPic(path, filename,cfg):
     global aa
     file = os.path.join(path, filename) # 路径拼接
     with open(file, 'rb')as f:
-        datadict = p.load(f, encoding='latin1')
+        datadict = p.load(f, encoding='latin1')#bytes
+        pdb.set_trace()
         x_train = datadict['data']
         t_train = datadict['labels']
         x_train = np.array(x_train)
@@ -79,16 +80,16 @@ def Testset_ToPic(path, cfg):
 def main():
     args = parser_args()
     cfg = Config.fromfile(args.config)
-    train_batch_path = cfg.PARA.data.original_trainset_path
+    train_batch_path = cfg.PARA.cifar10_paths.original_trainset_path
     child_path = os.listdir(train_batch_path)
     child_path.sort()
     for filename in child_path:
         SegDataset_ToPic(train_batch_path, filename, cfg)
-    Testset_ToPic(cfg.PARA.data.original_testset_path,cfg)
+    Testset_ToPic(cfg.PARA.cifar10_paths.original_testset_path,cfg)
     #生成.txt文件
-    dir = {0: cfg.PARA.data.after_trainset_path, 1: cfg.PARA.data.after_valset_path, 2: cfg.PARA.data.after_testset_path}
+    dir = {0: cfg.PARA.cifar10_paths.after_trainset_path, 1: cfg.PARA.cifar10_paths.after_valset_path, 2: cfg.PARA.cifar10_paths.after_testset_path}
     NAME = {0: 'train', 1: 'val', 2: 'test'}
-    TXT = {0: cfg.PARA.data.train_data_txt, 1: cfg.PARA.data.val_data_txt, 2: cfg.PARA.data.test_data_txt}
+    TXT = {0: cfg.PARA.cifar10_paths.train_data_txt, 1: cfg.PARA.cifar10_paths.val_data_txt, 2: cfg.PARA.cifar10_paths.test_data_txt}
     for i in range(3):
         files = os.listdir(dir[i])
         NAME[i] = open(TXT[i], 'a')

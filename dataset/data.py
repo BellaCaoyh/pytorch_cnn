@@ -15,9 +15,9 @@ def default_loader(path):
     return Image.open(path).convert('RGB')
     #不使用.convert(‘RGB’)进行转换读出来的图像是RGBA四通道的，A通道为透明通道
 
-class Cifar10Dataset(Dataset):
+class CiFar10Dataset(Dataset):
     def __init__(self, txt, transform, loader=default_loader):
-        super(Cifar10Dataset, self).__init__()
+        super(CiFar10Dataset, self).__init__()
         fh = open(txt, 'r')
         imgs = []
         for line in fh:
@@ -63,9 +63,9 @@ class DataPreProcess():
 def test():
     args = parser()
     cfg = Config.fromfile(args.config)
-    train_data = Cifar10Dataset(txt=cfg.PARA.data.train_data_txt, transform='for_train')
-    val_data = Cifar10Dataset(txt=cfg.PARA.data.val_data_txt, transform='for_val')
-    test_data = Cifar10Dataset(txt=cfg.PARA.data.test_data_txt, transform='for_test')
+    train_data = CiFar10Dataset(txt=cfg.PARA.data.train_data_txt, transform='for_train')
+    val_data = CiFar10Dataset(txt=cfg.PARA.data.val_data_txt, transform='for_val')
+    test_data = CiFar10Dataset(txt=cfg.PARA.data.test_data_txt, transform='for_test')
     print('num_of_trainData:', len(train_data))
     print('num_of_valData:', len(val_data))
     print('num_of_testData:', len(test_data))

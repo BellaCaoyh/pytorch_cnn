@@ -1,0 +1,32 @@
+2021-01-06 22:44:18,981 - train.py[line:111] - INFO : ==> Preparing dataset <==
+2021-01-06 22:44:19,063 - train.py[line:114] - INFO : ==> Loading model <==
+2021-01-06 22:44:25,149 - train.py[line:123] - INFO : ==> SUM NET Params <==
+2021-01-06 22:44:25,151 - train.py[line:137] - INFO : ==> Waiting Train <==
+Traceback (most recent call last):
+  File "train.py", line 148, in <module>
+    main()
+  File "train.py", line 139, in main
+    train_loader=train_loader,valid_loader=valid_loader,args=args,log=log,cfg=cfg)
+  File "train.py", line 65, in train
+    outputs = net(inputs)
+  File "/home/caoyh/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 722, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/home/caoyh/SelfUPUP/NN/models/resnet.py", line 263, in forward
+    return self._forward_impl(x)
+  File "/home/caoyh/SelfUPUP/NN/models/resnet.py", line 252, in _forward_impl
+    x = self.layer3(x)
+  File "/home/caoyh/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 722, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/home/caoyh/anaconda3/lib/python3.7/site-packages/torch/nn/modules/container.py", line 117, in forward
+    input = module(input)
+  File "/home/caoyh/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 722, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/home/caoyh/SelfUPUP/NN/models/resnet.py", line 133, in forward
+    out = self.conv1(x)
+  File "/home/caoyh/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py", line 722, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/home/caoyh/anaconda3/lib/python3.7/site-packages/torch/nn/modules/conv.py", line 419, in forward
+    return self._conv_forward(input, self.weight)
+  File "/home/caoyh/anaconda3/lib/python3.7/site-packages/torch/nn/modules/conv.py", line 416, in _conv_forward
+    self.padding, self.dilation, self.groups)
+RuntimeError: CUDA out of memory. Tried to allocate 44.00 MiB (GPU 0; 10.73 GiB total capacity; 175.28 MiB already allocated; 48.56 MiB free; 192.00 MiB reserved in total by PyTorch)

@@ -3,8 +3,12 @@ import warnings
 import torch
 from torch import nn, Tensor
 import torch.nn.functional as F
-from .utils import load_state_dict_from_url
+# from .utils import load_state_dict_from_url
 from typing import Callable, Any, Optional, Tuple, List
+try:
+    from torch.hub import load_state_dict_from_url
+except ImportError:
+    from torch.utils.model_zoo import load_url as load_state_dict_from_url
 
 
 __all__ = ['Inception3', 'inception_v3', 'InceptionOutputs', '_InceptionOutputs']

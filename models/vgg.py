@@ -1,7 +1,11 @@
 import torch
 import torch.nn as nn
-from .utils import load_state_dict_from_url
+# from .utils import load_state_dict_from_url
 from typing import Union, List, Dict, Any, cast
+try:
+    from torch.hub import load_state_dict_from_url
+except ImportError:
+    from torch.utils.model_zoo import load_url as load_state_dict_from_url
 
 
 __all__ = [
@@ -27,7 +31,7 @@ class VGG(nn.Module):
     def __init__(
         self,
         features: nn.Module,
-        num_classes: int = 1000,
+        num_classes: int = 10,
         init_weights: bool = True
     ) -> None:
         super(VGG, self).__init__()

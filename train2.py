@@ -6,6 +6,8 @@ import torch
 import torch.nn as nn
 from torch import optim
 from torch.utils.data import DataLoader
+import torchvision
+import torchvision.transforms as transforms
 from torch.autograd import Variable
 from mmcv import Config
 from models import resnet
@@ -20,6 +22,27 @@ from loss import MyCrossEntropy
 os.environ['CUDA_VISION_DEVICES'] = '0'
 
 assert torch.cuda.is_available(), 'Error: CUDA is not find!'
+
+transform_train = transforms.Compose([
+    transforms.RandomCrop(32, padding=4),  # 先四周填充0，在吧图像随机裁剪成32*32
+    transforms.RandomHorizontalFlip(),  # 图像一半的概率翻转，一半的概率不翻转
+    transforms.ToTensor(),  # 维度转化 由32x32x3  ->3x32x32
+    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+    # R,G,B每层的归一化用到的均值和方差     即参数为变换过程，而非最终结果。
+])
+
+transform_test = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+])
+root = '/home/caoyh/DATASET/cifar10/'
+trainset = torchvision.datasets.CIFAR10(root=root, train=True, download=False, transform=transform_train)  # 训练数据集
+train_loader = torch.utils.data.DataLoader(trainset, batch_size=128, shuffle=True,num_workers=2)  # 生成一个个batch进行批训练，组成batch的时候顺序打乱取
+# valid_loader = torch.utils.data.DataLoader(validset, batch_size=128, shuffle=True,num_workers=2)
+testset = torchvision.datasets.CIFAR10(root=root, train=False, download=False, transform=transform_test)
+test_loader = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=False, num_workers=2)
+valid_loader = test_loader
+
 
 def parser():
     parse = argparse.ArgumentParser(description='Pytorch Cifar10 Training')
@@ -44,14 +67,18 @@ def get_model_params(net,args,cfg):
         f.write('total_params:%d\n'%total_params)
         f.write('total_trainable_params: %d\n'%total_trainable_params)
 
-def DataLoad(cfg):
-    trainset = Cifar10Dataset(txt=cfg.PARA.cifar10_paths.train_data_txt, transform='for_train')
-    validset = Cifar10Dataset(txt=cfg.PARA.cifar10_paths.valid_data_txt, transform='for_valid')
-    train_loader = DataLoader(dataset=trainset, batch_size=cfg.PARA.train.batch_size, drop_last=True, shuffle=True, num_workers=cfg.PARA.train.num_workers)
-    valid_loader = DataLoader(dataset=validset, batch_size=cfg.PARA.train.batch_size, drop_last=True, shuffle=True, num_workers=cfg.PARA.train.num_workers)
-    return train_loader, valid_loader
+# def DataLoad(cfg):
+#     trainset = Cifar10Dataset(txt=cfg.PARA.cifar10_paths.train_data_txt, transform='for_train')
+#     validset = Cifar10Dataset(txt=cfg.PARA.cifar10_paths.valid_data_txt, transform='for_valid')
+#     train_loader = DataLoader(dataset=trainset, batch_size=cfg.PARA.train.batch_size, drop_last=True, shuffle=True, num_workers=cfg.PARA.train.num_workers)
+#     valid_loader = DataLoader(dataset=validset, batch_size=cfg.PARA.train.batch_size, drop_last=True, shuffle=True, num_workers=cfg.PARA.train.num_workers)
+#     return train_loader, valid_loader
 
 def train(net,criterion,optimizer, train_loader, valid_loader, args, log, cfg):
+    '''Loss & Optimizer'''
+    # criterion = nn.CrossEntropyLoss().cuda(args.gpuid)
+    # criterion = MyCrossEntropy().cuda()
+    # optimizer = optim.SGD(net.parameters(), lr=cfg.PARA.train.lr, momentum=cfg.PARA.train.momentum)
     for epoch in range(cfg.PARA.train.epochs):
         net.train()
         train_loss = 0.0
@@ -72,10 +99,7 @@ def train(net,criterion,optimizer, train_loader, valid_loader, args, log, cfg):
             train_total += labels.size(0)
             if (i+1+epoch*length)%100==0:
                 log.logger.info('[Epoch:%d, iter:%d] Loss: %.5f '
-                            %(epoch+1, (i+1+epoch*length), train_loss/ (i+1)))
-        with open(cfg.PARA.utils_paths.visual_path + args.net + '_train.txt', 'a') as f:
-            f.write('epoch=%d,loss=%.5f\n' % (epoch + 1, train_loss / length))
-
+                            %(epoch+1, (i+1+epoch*length), train_loss/(i+1)))
 
         net.eval()
         valid_loss = 0.0
@@ -92,8 +116,12 @@ def train(net,criterion,optimizer, train_loader, valid_loader, args, log, cfg):
                 loss = criterion(outputs, labels)
                 valid_loss += loss.item()
             log.logger.info('Validation | Loss: %.5f' % (valid_loss / length))
-            with open(cfg.PARA.utils_paths.visual_path+args.net+'_valid.txt','a') as f:
-                f.write('epoch=%d,loss=%.5f\n' %(epoch+1, valid_loss/length))
+
+        '''save final acc for visual'''
+        with open(cfg.PARA.utils_paths.visual_path+args.net+'_train.txt','a') as f:
+            f.write('epoch=%d,loss=%.5f\n' %(epoch+1, train_loss/length))
+        with open(cfg.PARA.utils_paths.visual_path+args.net+'_valid.txt','a') as f:
+            f.write('epoch=%d,loss=%.5f\n' %(epoch+1, valid_loss/length))
 
         '''save model's net & epoch to checkpoint'''
         log.logger.info('Save model to checkpoint ' )
@@ -109,14 +137,15 @@ def main():
     start_epoch = 0
 
     log.logger.info('==> Preparing dataset <==')
-    train_loader, valid_loader = DataLoad(cfg)
+    # train_loader, valid_loader = DataLoad(cfg)
 
     log.logger.info('==> Loading model <==')
     if args.pretrain:
         log.logger.info('Loading Pretrain Data')
 
     net = get_network(args, cfg).cuda(args.gpuid)
-    criterion = MyCrossEntropy().cuda(args.gpuid)
+    # criterion = MyCrossEntropy().cuda()
+    criterion = nn.CrossEntropyLoss().cuda(args.gpuid)
     optimizer = optim.SGD(net.parameters(), lr=cfg.PARA.train.lr, momentum=cfg.PARA.train.momentum)
 
     # net = resnet18().cuda(args.gpuid)
