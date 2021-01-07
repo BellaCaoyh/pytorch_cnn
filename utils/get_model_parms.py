@@ -1,4 +1,3 @@
-
 def get_model_params(net,arg,cfg):
     total_params = sum(p.numel() for p in net.parameters())
     total_trainable_params = sum(

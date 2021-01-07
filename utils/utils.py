@@ -2,12 +2,6 @@ import torch
 import pdb
 import numpy as np
 
-# def ToOnehot(labels,num_classes):
-#     temp = torch.eyes(len(labels),num_classes)
-#     for i in range(len(labels)):
-#         temp[i,labels[i]] = 1
-#     return temp
-
 def ToOnehot(label, num_classes):
     temp = torch.eye(num_classes)
     return temp[label]

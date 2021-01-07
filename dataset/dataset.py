@@ -22,42 +22,10 @@ def parser():# set config_path
     args = parser.parse_args()
     return args
 
-# def Download_Cifar10(root):
-#     transform_train = transforms.Compose([
-#         transforms.RandomCrop(32, padding=4),  # 先四周填充0，图像随机裁剪成32*32
-#         transforms.RandomHorizontalFlip(),  # 图像一半的概率翻转，一半的概率不翻转
-#         transforms.ToTensor(),  # 维度转化 由32x32x3  ->3x32x32
-#         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
-#         # R,G,B每层的归一化用到的均值和方差     即参数为变换过程，而非最终结果。
-#     ])
-#
-#     transform_test = transforms.Compose([
-#         transforms.ToTensor(),
-#         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
-#     ])
-#
-#     '''train_dataset'''
-#     train_cifar10 = datasets.CIFAR10(
-#         root=root,
-#         train=True,
-#         download=True,  # False,
-#         transform=transform_train
-#     )
-#
-#     '''test_dataset'''
-#     test_cifar10 = datasets.CIFAR10(
-#         root=root,
-#         train=False,
-#         download=True,  # False,
-#         transform=transform_test
-#     )
-#     return train_cifar10,test_cifar10
-
 def unpickle(file):
     with open(file, 'rb') as fo:
         dict = pickle.load(fo, encoding='bytes')
     return dict
-
 
 '''2.seg dataset to pic'''
 def Trainset2Pic(cfg):

@@ -16,7 +16,6 @@ from utils.get_net import get_network
 from utils.visualization import plot_acc_loss
 from loss import MyCrossEntropy
 
-
 os.environ['CUDA_VISION_DEVICES'] = '0'
 
 assert torch.cuda.is_available(), 'Error: CUDA is not find!'
