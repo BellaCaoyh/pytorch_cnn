@@ -139,9 +139,8 @@ def main():
           train_loader=train_loader,valid_loader=valid_loader,args=args,log=log,cfg=cfg)
     log.logger.info('==> Finish Train <==')
 
-    # log.logger.info('==> Plot ACC & Save to Visual <==')
-    # plot_acc_loss(cfg.PARA.utils_paths.visual_path+args.net+'_train.txt', args, cfg=cfg, N=201)
-
+    log.logger.info('==> Plot Train_Vilid Loss & Save to Visual <==')
+    plot_acc_loss(args, cfg=cfg)
     log.logger.info('*'*25)
 
 if __name__ == '__main__':

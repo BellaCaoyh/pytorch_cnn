@@ -16,18 +16,18 @@ PARA = dict(
     cifar10_paths = dict(
         validation_rate = 0.05,
 
-        root = '/home/caoyh/DATASET/cifar10/',
+        root = '../../DATASET/cifar10/',
 
-        original_trainset_path = '/home/caoyh/DATASET/cifar10/cifar-10-python/',#train_batch_path
-        original_testset_path = '/home/caoyh/DATASET/cifar10/cifar-10-python/',
+        original_trainset_path = '../../DATASET/cifar10/cifar-10-python/',#train_batch_path
+        original_testset_path = '../../DATASET/cifar10/cifar-10-python/',
 
-        after_trainset_path = '/home/caoyh/DATASET/cifar10/trainset/',
-        after_testset_path = '/home/caoyh/DATASET/cifar10/testset/',
-        after_validset_path = '/home/caoyh/DATASET/cifar10/validset/',
+        after_trainset_path = '../../DATASET/cifar10/trainset/',
+        after_testset_path = '../../DATASET/cifar10/testset/',
+        after_validset_path = '../../DATASET/cifar10/validset/',
 
-        train_data_txt = '/home/caoyh/DATASET/cifar10/train.txt',
-        test_data_txt = '/home/caoyh/DATASET/cifar10/test.txt',
-        valid_data_txt = '/home/caoyh/DATASET/cifar10/valid.txt',
+        train_data_txt = '../../DATASET/cifar10/train.txt',
+        test_data_txt = '../../DATASET/cifar10/test.txt',
+        valid_data_txt = '../../DATASET/cifar10/valid.txt',
     ),
     utils_paths = dict(
         checkpoint_path = './cache/checkpoint/',

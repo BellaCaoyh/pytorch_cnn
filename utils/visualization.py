@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import argparse
 from mmcv import Config
 
-def plot_acc_loss(train_txt, valid_txt, args,cfg,N=0):
+def plot_acc_loss(args,cfg,N=0):
     '''
     plot visual pic to save
     :param txt: train_data_txt path
@@ -10,6 +10,8 @@ def plot_acc_loss(train_txt, valid_txt, args,cfg,N=0):
     :param args: get net_name
     :return: save pic to visual
     '''
+    train_txt = cfg.PARA.utils_paths.visual_path+args.net+'_train.txt'
+    valid_txt = cfg.PARA.utils_paths.visual_path+args.net+'_valid.txt'
     EPOCH, Loss_train, Loss_valid = [],[],[]
     with open(train_txt, encoding='utf-8') as f:
         for line in f.readlines()[N:]:#从第Nhang开始读取数据
@@ -33,8 +35,7 @@ def plot_acc_loss(train_txt, valid_txt, args,cfg,N=0):
     plt.plot(EPOCH,Loss_train,color='red',label='Train_Loss')
     plt.plot(EPOCH,Loss_valid,color='blue',label='Valid_Loss')
     plt.legend()
-    # plt.legend(loc=('lower right'))
     plt.grid(True)
     # plt.ylim(0,1)
-    # plt.savefig(cfg.PARA.utils_paths.visual_path + args.net + '.png')
-    plt.savefig('../cache/visual/' + args.net + '.png')
+    plt.savefig(cfg.PARA.utils_paths.visual_path + args.net + '.png')
+    # plt.savefig('../cache/visual/' + args.net + '.png')
