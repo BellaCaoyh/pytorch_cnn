@@ -8,13 +8,16 @@ from torch import optim
 from torch.utils.data import DataLoader
 from torch.autograd import Variable
 from mmcv import Config
+import numpy as np
 from models import resnet
 from models.resnet import *
+from models.mylenet5 import MyLenet5
 from log.logger import Logger
 from dataset.dataset import Cifar10Dataset
 from utils.get_net import get_network
 from utils.visualization import plot_acc_loss
 from loss import MyCrossEntropy
+
 
 os.environ['CUDA_VISION_DEVICES'] = '0'
 
@@ -24,8 +27,8 @@ def parser():
     parse = argparse.ArgumentParser(description='Pytorch Cifar10 Training')
     # parse.add_argument('--local_rank',default=0,type=int,help='node rank for distributedDataParallel')
     parse.add_argument('--config','-c',default='./config/config.py',help='config file path')
-    parse.add_argument('--net','-n',type=str,required=True,help='input which model to use')
-    # parse.add_argument('--net','-n',default='resnet18')
+    # parse.add_argument('--net','-n',type=str,required=True,help='input which model to use')
+    parse.add_argument('--net','-n',default='MyLenet5')
     parse.add_argument('--pretrain','-p',action='store_true',help='Location pretrain data')
     parse.add_argument('--resume','-r',action='store_true',help='resume from checkpoint')
     parse.add_argument('--epoch','-e',default=None,help='resume from epoch')
@@ -142,9 +145,38 @@ def main():
     plot_acc_loss(args, cfg=cfg)
     log.logger.info('*'*25)
 
-if __name__ == '__main__':
-    main()
+def lenet5_test():
+    args = parser()
+    cfg = Config.fromfile(args.config)
+    log = Logger(cfg.PARA.utils_paths.log_path+ args.net + '_trainlog.txt',level='info')
+    start_epoch = 0
 
+    log.logger.info('==> Preparing dataset <==')
+    train_loader, valid_loader = DataLoad(cfg)
+
+    log.logger.info('==> Loading model <==')
+    if args.pretrain:
+        log.logger.info('Loading Pretrain Data')
+
+    x = np.random.randn(2,3,32,32)
+    t = np.zeros((2,10))
+    t[0,5] = 1
+    t[1,0] = 1
+
+    net = MyLenet5()
+    loss = net.loss(x,t)
+
+    pdb.set_trace()
+    grads = net.gradient(x,t)
+
+
+    print(net)
+
+
+
+if __name__ == '__main__':
+    # main()
+    lenet5_test()
 
 
 

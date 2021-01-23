@@ -5,12 +5,19 @@ from models.resnet import resnet18,resnet34,resnet50,resnet101,resnet152
 from models.vgg import vgg11,vgg11_bn,vgg13,vgg13_bn,vgg16,vgg16_bn,vgg19,vgg19_bn
 from models.inception import inception_v3
 from models.squeezenet import squeezenet1_0
+from models.alexnet import alexnet
+from models.lenet5 import LeNet5
 import pdb
 
 def get_network(args,cfg):
     """ return given network
     """
-    if args.net == 'vgg16':
+    # pdb.set_trace()
+    if args.net == 'lenet5':
+        net = LeNet5().cuda()
+    elif args.net == 'alexnet':
+        net = alexnet(pretrained=args.pretrain, num_classes=cfg.PARA.train.num_classes).cuda()
+    elif args.net == 'vgg16':
         net = vgg16(pretrained=args.pretrain, num_classes=cfg.PARA.train.num_classes).cuda()
     elif args.net == 'vgg13':
         net = vgg13(pretrained=args.pretrain,num_classes=cfg.PARA.train.num_classes).cuda()
